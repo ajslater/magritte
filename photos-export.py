@@ -22,6 +22,7 @@ EXPORT_PATH = os.path.join(os.environ['HOME'], 'Pictures',
                            'Photo Albums')
 ROOT_FOLDER = ':TopLevelAlbums:'
 
+
 def row_to_dict(row, keys):
     row_dict = {}
     for key in keys:
