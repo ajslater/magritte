@@ -29,9 +29,13 @@ def parse_reqs(filename):
     install_reqs = parse_requirements(filename, session=False)
     return [str(ir.req) for ir in install_reqs]
 
-req_list = parse_reqs(REQUIREMENTS['prod'])
-if len(sys.argv) > 2 and sys.argv[2] == ('develop'):
-    req_list += parse_reqs(REQUIREMENTS['dev'])
+
+def get_req_list():
+    """ get the requirements by weather we're building develop or not"""
+    req_list = parse_reqs(REQUIREMENTS['prod'])
+    if len(sys.argv) > 2 and sys.argv[2] == ('develop'):
+        req_list += parse_reqs(REQUIREMENTS['dev'])
+    return req_list
 
 
 with open(README_FILENAME, 'r') as readme_file:
@@ -44,8 +48,7 @@ setup(
     author='AJ Slater',
     author_email='aj@slater.net',
     url='https://github.com/ajslater/magritte/',
-    py_modules=['magritte'],
-    install_requires=req_list,
+    install_requires=get_req_list(),
     entry_points={
         'console_scripts': [
             'magritte=magritte.cli:main'
