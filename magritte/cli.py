@@ -60,7 +60,8 @@ def main():
 
     folders_by_model, folders_by_uuid, albums = load_data()
     root_folder = build(folders_by_model, folders_by_uuid, albums)
-    copy_folders(root_folder, [], True)
+    total_copied = copy_folders(root_folder, [], True)
+    print('copied %s items in total' % total_copied)
 
 
 if __name__ == '__main__':
