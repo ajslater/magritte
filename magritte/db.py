@@ -22,8 +22,7 @@ def row_to_dict(row, keys):
     return row_dict
 
 
-def get_folders(conn):
-    cursor = conn.cursor()
+def get_folders(cursor):
     sql = 'SELECT * FROM RKFolder WHERE name IS NOT NULL ' \
           'AND NOT isInTrash AND folderType <> 2 '
     sql += 'AND name NOT IN %s' % (EXCLUDE_FOLDER_NAMES,)
@@ -36,26 +35,21 @@ def get_folders(conn):
         folders_by_model[row['modelId']] = row_dict
         folders_by_uuid[row['uuid']] = row_dict
 
-    cursor.close()
-
     return folders_by_model, folders_by_uuid
 
 
-def get_albums(conn, folder_uuids):
+def get_albums(cursor, folder_uuids):
     albums = {}
-    cursor = conn.cursor()
 
     sql = 'SELECT * FROM RKAlbum WHERE name IS NOT NULL AND NOT isInTrash '
     sql += 'AND folderUuid IN %s' % (tuple(folder_uuids),)
     rows = cursor.execute(sql)
     for row in rows:
         albums[row['modelId']] = row_to_dict(row, ALBUM_KEYS)
-    cursor.close()
     return albums
 
 
-def fill_albums(conn, albums):
-    cursor = conn.cursor()
+def fill_albums(cursor, albums):
     for album in albums.values():
         album_id = album.get('modelId')
         rows = cursor.execute(
@@ -67,7 +61,6 @@ def fill_albums(conn, albums):
         for row in rows:
             media = row_to_dict(row, MASTER_KEYS)
             album['media'].append(media)
-    cursor.close()
 
 
 def get_conn():
@@ -80,11 +73,15 @@ def get_conn():
 
 
 def load_data():
+    # TODO with style?
     conn = get_conn()
-    folders_by_model, folders_by_uuid = get_folders(conn)
-    all_albums = get_albums(conn, folders_by_uuid.keys())
-    fill_albums(conn, all_albums)
+    cursor = conn.cursor()
 
+    folders_by_model, folders_by_uuid = get_folders(cursor)
+    all_albums = get_albums(cursor, folders_by_uuid.keys())
+    fill_albums(cursor, all_albums)
+
+    cursor.close()
     conn.close()
 
     return folders_by_model, folders_by_uuid, all_albums
