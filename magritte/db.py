@@ -74,7 +74,6 @@ def get_conn():
     db_path = os.path.join(Settings.photos_library_path, 'Database',
                            'apdb', 'Library.apdb')
     db_uri = 'file://%s?mode=ro' % db_path
-    print(db_uri)
     conn = sqlite3.connect(db_uri, uri=True)
     conn.row_factory = sqlite3.Row
     return conn
