@@ -3,7 +3,6 @@ import sqlite3
 
 from magritte.settings import Settings
 
-
 EXCLUDE_FOLDER_NAMES = ('Trash', 'TopLevelBooks', 'TopLevelKeepsakes',
                         'TopLevelLightTables', 'Projects',
                         'TopLevelWebProjects', 'TopLevelSlideshows')
@@ -70,11 +69,16 @@ def fill_albums(conn, albums):
     cursor.close()
 
 
-def load_data():
-    conn = sqlite3.connect('file:'+Settings.photos_library_path+'?mode=ro',
-                           uri=True)
+def get_conn():
+    db_uri = 'file://'+Settings.photos_library_path+'?mode=ro'
+    print(db_uri)
+    conn = sqlite3.connect(db_uri, uri=True)
     conn.row_factory = sqlite3.Row
+    return conn
 
+
+def load_data():
+    conn = get_conn()
     folders_by_model, folders_by_uuid = get_folders(conn)
     all_albums = get_albums(conn, folders_by_uuid.keys())
     fill_albums(conn, all_albums)
