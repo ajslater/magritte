@@ -11,6 +11,7 @@ class Settings(object):
     export_path = os.path.join(PICTURES_PATH, 'Photo Albums')
     verbose = 1
     do_copy = True
+    copy_filter = None
 
     @classmethod
     def update(cls, settings):

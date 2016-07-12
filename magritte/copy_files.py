@@ -30,47 +30,53 @@ def copy_folder(folder, parents):
                             )
           )
     albums = folder.get('albums')
-    if albums:
-        for album in albums.values():
-            media = album.get('media')
-            album_name = os.path.join(folder_name, album.get('name'))
-            if len(media) <= 0:
+    if not albums:
+        return
+
+    for album in albums.values():
+        media = album.get('media')
+        album_name = os.path.join(folder_name, album.get('name'))
+        if len(media) <= 0:
+            if Settings.verbose > 1:
                 print(' %s%s EMPTY ALBUM!' % (indent, album_name))
-                continue
-            if Settings.do_copy:
-                mkdir_if_not_exist(album_name)
-            print(' %s%s' % (indent, album.get('name')))
-            print('  %s%s items' % (indent, len(media)))
-            for item in media:
-                file_dst_path = os.path.join(Settings.export_path, album_name,
-                                             item.get('fileName'))
-                outstr = '  %s%s' % (indent, item.get('fileName'))
-                file_src_path = os.path.join(IMAGE_ROOT,
-                                             item.get('imagePath'))
-                src_exists = os.path.exists(file_src_path)
-                if src_exists:
-                    if Settings.do_copy:
-                        copy_if_newer(file_src_path, file_dst_path)
-                else:
-                    outstr += ' NOT FOUND'
-                    print(outstr)
+            continue
+        if Settings.do_copy:
+            mkdir_if_not_exist(album_name)
+        print(' %s%s' % (indent, album.get('name')))
+        print('  %s%s items' % (indent, len(media)))
+        for item in media:
+            file_dst_path = os.path.join(Settings.export_path, album_name,
+                                         item.get('fileName'))
+            outstr = '  %s%s' % (indent, item.get('fileName'))
+            file_src_path = os.path.join(IMAGE_ROOT,
+                                         item.get('imagePath'))
+            src_exists = os.path.exists(file_src_path)
+            if src_exists:
+                if Settings.do_copy:
+                    copy_if_newer(file_src_path, file_dst_path)
+            else:
+                outstr += ' NOT FOUND'
+                print(outstr)
 
 
 def copy_folders(folder, parents, hide):
     if not folder:
-        print('NULL FOLDER')
+        if Settings.verbose > 1:
+            print('NULL FOLDER')
         return
-    if folder.get('parentFolderUuid') == 'TopLevelAlbums':
+    if Settings.copy_filter is None and \
+            folder.get('parentFolderUuid') == 'TopLevelAlbums':
+        hide = False
+    folder_name = folder.get('name')
+    if Settings.copy_filter and folder_name == Settings.copy_filter:
         hide = False
     indent = ' ' * len(parents)
-    folder_name = folder.get('name')
     if hide:
-        print('%s%s type:%s HIDDEN FOLDER %s %s' % (indent, folder_name,
-                                                    folder.get('folderType'),
-                                                    folder.get('modelId'),
-                                                    folder.get('folderPath')
-                                                    )
-              )
+        if Settings.verbose > 1:
+            print('%s%s type:%s HIDDEN FOLDER %s %s' %
+                  (indent, folder_name, folder.get('folderType'),
+                   folder.get('modelId'), folder.get('folderPath'))
+                  )
     else:
         copy_folder(folder, parents)
 

@@ -2,7 +2,6 @@
 """
 CLI for copying photos from macOS Photos to the filesystem
 """
-import os
 import argparse
 
 from magritte.settings import Settings
@@ -10,11 +9,6 @@ from magritte.db import load_data
 from magritte.build import build
 from magritte.copy_files import copy_folders
 from magritte import __version__
-
-PHOTOS_APP_PATH_DEFAULT = os.path.join(os.environ['HOME'], 'Pictures',
-                                       'Photos Library.photoslibrary')
-EXPORT_PATH_DEFAULT = os.path.join(os.environ['HOME'], 'Pictures',
-                                   'Photo Albums')
 
 
 def get_arguments():
@@ -31,10 +25,13 @@ def get_arguments():
                         help="Display little to no output")
     parser.add_argument("-l", "--photos-library-path", action="store",
                         dest="photos_library_path",
-                        default=PHOTOS_APP_PATH_DEFAULT,
+                        default=Settings.photos_library_path,
                         help="Location of the Photos App Library to copy")
     parser.add_argument("-e", "--export-path", action="store",
-                        dest="export_path", default=EXPORT_PATH_DEFAULT,
+                        dest="export_path", default=Settings.export_path,
+                        help="Path to export to")
+    parser.add_argument("-f", "--copy-filter", action="store",
+                        dest="copy_filter", default=Settings.copy_filter,
                         help="Path to export to")
     parser.add_argument("-d", "--dry-run", action="store_false",
                         dest="do_copy", default=True,
