@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import os
 import sqlite3
 
 from magritte.settings import Settings
@@ -70,7 +71,9 @@ def fill_albums(conn, albums):
 
 
 def get_conn():
-    db_uri = 'file://'+Settings.photos_library_path+'?mode=ro'
+    db_path = os.path.join(Settings.photos_library_path, 'Database',
+                           'apdb', 'Library.apdb')
+    db_uri = 'file://%s?mode=ro' % db_path
     print(db_uri)
     conn = sqlite3.connect(db_uri, uri=True)
     conn.row_factory = sqlite3.Row
