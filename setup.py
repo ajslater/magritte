@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """ Setup file for Magritte
 Reference:
 https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/
@@ -64,7 +64,6 @@ setup(
         'Environment :: Console',
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
         'Operating System :: OS Independent',
-        'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
         'Topic :: Multimedia :: Graphics :: Graphics Conversion',
