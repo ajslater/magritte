@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-"""
-CLI for copying photos from macOS Photos to the filesystem
-"""
+"""CLI for copying photos from macOS Photos to the filesystem."""
 import argparse
 
 from magritte.settings import Settings
@@ -12,7 +10,7 @@ from magritte import __version__
 
 
 def get_arguments():
-    """parses the command line"""
+    """Parse the command line."""
     usage = "%(prog)s [arguments] [image files]"
     description = "Exports all albums from macOS Photos to the filesystem"
     parser = argparse.ArgumentParser(usage=usage, description=description)
@@ -44,8 +42,7 @@ def get_arguments():
 
 
 def process_arguments(arguments):
-    """ Recomputer special cases for input arguments """
-
+    """Recompute special cases for input arguments."""
     Settings.update(arguments)
 
     Settings.verbose = arguments.verbose + 1
@@ -54,7 +51,7 @@ def process_arguments(arguments):
 
 
 def main():
-    """main"""
+    """Process arguments, load data and copy to filesystem."""
     raw_arguments = get_arguments()
     process_arguments(raw_arguments)
 

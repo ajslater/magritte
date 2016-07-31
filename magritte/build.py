@@ -1,4 +1,6 @@
+"""Build the folder and album tree in memory."""
 def build_folder_tree(folders):
+    """Build the folder tree."""
     root_folder = None
     for model_id, folder in folders.items():
         folder_paths_str = folder.get('folderPath').strip('/')
@@ -16,6 +18,7 @@ def build_folder_tree(folders):
 
 
 def assign_albums_to_folders(folders, albums):
+    """Assign albums to folders."""
     for album in albums.values():
         folder_uuid = album.get('folderUuid')
         folder = folders.get(folder_uuid)
@@ -28,6 +31,7 @@ def assign_albums_to_folders(folders, albums):
 
 
 def build(folders_by_model, folders_by_uuid, albums):
+    """Build the entire folder and album tree."""
     root_folder = build_folder_tree(folders_by_model)
     assign_albums_to_folders(folders_by_uuid, albums)
     return root_folder

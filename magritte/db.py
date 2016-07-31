@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+"""Load data from the Apple Photos database."""
 import os
 import sqlite3
 
@@ -10,6 +10,7 @@ EXCLUDE_FOLDER_NAMES = ('Trash', 'TopLevelBooks', 'TopLevelKeepsakes',
 
 
 def get_folders(cursor):
+    """Get the folders from the db."""
     sql = 'SELECT modelId, folderPath, parentFolderUuid, name, uuid ' \
           'FROM RKFolder WHERE name IS NOT NULL ' \
           'AND NOT isInTrash AND folderType <> 2 '
@@ -27,6 +28,7 @@ def get_folders(cursor):
 
 
 def get_albums(cursor, folder_uuids):
+    """Get the albums from the db."""
     albums = {}
 
     sql = 'SELECT modelId, name, folderUuid FROM RKAlbum ' \
@@ -40,6 +42,7 @@ def get_albums(cursor, folder_uuids):
 
 
 def fill_albums(cursor, albums):
+    """Fill the albums with photos from the db."""
     for album in albums.values():
         album_id = album.get('modelId')
         sql = 'SELECT imagePath, fileName FROM RKMaster WHERE modelId IN' \
@@ -53,6 +56,7 @@ def fill_albums(cursor, albums):
 
 
 def get_conn():
+    """Get a database connection."""
     db_path = os.path.join(Settings.photos_library_path, 'Database',
                            'apdb', 'Library.apdb')
     db_uri = 'file://%s?mode=ro' % db_path
@@ -62,6 +66,7 @@ def get_conn():
 
 
 def load_data():
+    """Get a db connection, load folders, albums, and photos."""
     conn = get_conn()
     cursor = conn.cursor()
 

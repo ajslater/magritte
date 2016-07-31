@@ -1,10 +1,11 @@
+"""Settings class for magritte."""
 import os
 
 PICTURES_PATH = os.path.join(os.environ['HOME'], 'Pictures')
 
 
 class Settings(object):
-    """ a global settings class """
+    """A global settings class."""
 
     photos_library_path = os.path.join(PICTURES_PATH,
                                        'Photos Library.photoslibrary')
@@ -15,7 +16,8 @@ class Settings(object):
 
     @classmethod
     def update(cls, settings):
-        for k, v in settings.__dict__.items():
-            if k.startswith('_'):
+        """Update settings class from a dictionary."""
+        for key, val in settings.__dict__.items():
+            if key.startswith('_'):
                 continue
-            setattr(cls, k, v)
+            setattr(cls, key, val)

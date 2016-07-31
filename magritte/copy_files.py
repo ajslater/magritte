@@ -1,3 +1,4 @@
+"""Copy files from Apple Photos library to external filesystem."""
 import os
 import shutil
 import copy
@@ -9,6 +10,7 @@ TOP_FOLDER_NAMES = ('', 'TopLevelAlbums')
 
 
 def mkdir_if_not_exist(sub_path):
+    """Make a directory if it doesn't exist."""
     full_path = os.path.join(Settings.export_path, sub_path)
     if os.path.exists(full_path):
         return
@@ -16,6 +18,7 @@ def mkdir_if_not_exist(sub_path):
 
 
 def copy_if_newer(src, dst):
+    """Only copy the file if its newer than the old one."""
     dst_exists = os.path.exists(dst)
     copied = 0
     if not dst_exists or os.stat(src).st_mtime > os.stat(dst).st_mtime:
@@ -27,6 +30,7 @@ def copy_if_newer(src, dst):
 
 
 def copy_album(album, folder_name, indent):
+    """Copy an entire album."""
     media = album.get('media')
     album_name = os.path.join(folder_name, album.get('name'))
     total_copied = 0
@@ -55,6 +59,7 @@ def copy_album(album, folder_name, indent):
 
 
 def copy_folder(folder, parents):
+    """Copy an Apple Photos folder."""
     folder_name = os.path.sep.join(parents + [folder.get('name')])
     indent = ' ' * len(parents)
     print('%s%s' % (indent, folder_name))
@@ -67,6 +72,7 @@ def copy_folder(folder, parents):
 
 
 def copy_folders(folder, parents, hide):
+    """Copy all the folders."""
     total_copied = 0
     if not folder:
         if Settings.verbose > 1:
