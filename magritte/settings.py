@@ -9,7 +9,7 @@ class Settings(object):
 
     photos_library_path = os.path.join(PICTURES_PATH,
                                        'Photos Library.photoslibrary')
-    export_path = os.path.join(PICTURES_PATH, 'Photo Albums')
+    export_path = os.path.join(PICTURES_PATH, 'Photos Export')
     verbose = 1
     do_copy = True
     copy_filter = None
