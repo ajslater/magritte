@@ -31,9 +31,10 @@ def get_arguments():
     parser.add_argument("-f", "--copy-filter", action="store",
                         dest="copy_filter", default=Settings.copy_filter,
                         help="Path to export to")
-    parser.add_argument("-d", "--dry-run", action="store_false",
-                        dest="do_copy", default=True,
-                        help="Only print what files would be copied")
+    parser.add_argument("-c", "--copy", action="store_true",
+                        dest="do_copy", default=False,
+                        help="Actually copy files. Default behavior is "
+                             "only to print what files would be copied")
     parser.add_argument("-V", "--version", action="version",
                         version=__version__,
                         help="display the version number")
