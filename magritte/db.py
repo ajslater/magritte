@@ -8,6 +8,12 @@ EXCLUDE_FOLDER_NAMES = ('Trash', 'TopLevelBooks', 'TopLevelKeepsakes',
                         'TopLevelLightTables', 'Projects',
                         'TopLevelWebProjects', 'TopLevelSlideshows')
 
+EXCLUDE_ALBUM_NAMES = ('All Photos', 'Last Import',
+                       'Favorites', 'Hidden', 'Bursts', 'Panoramas',
+                       'Screenshots', 'Videos', 'Slo-mo', 'Time-lapse',
+                       'My Photo Stream', 'Selfies', 'People', 'Places',
+                       'Favorite Memories', 'Depth Effect')
+
 
 def get_folders(cursor):
     """Get the folders from the db."""
@@ -35,6 +41,7 @@ def get_albums(cursor, folder_uuids):
           'WHERE name IS NOT NULL ' \
           'AND NOT isInTrash '
     sql += 'AND folderUuid IN %s' % (tuple(folder_uuids),)
+    sql += 'AND name NOT IN %s' % (EXCLUDE_ALBUM_NAMES,)
     rows = cursor.execute(sql)
     for row in rows:
         albums[row['modelId']] = dict(row)
@@ -57,11 +64,17 @@ def fill_albums(cursor, albums):
 
 def get_conn():
     """Get a database connection."""
-    db_path = os.path.join(Settings.photos_library_path, 'Database',
-                           'apdb', 'Library.apdb')
+    db_path = os.path.join(Settings.photos_library_path, 'database',
+                           'photos.db')
+    # if it's not a new Photos lib, try the old file name
+    if not os.path.exists(db_path):
+        db_path = os.path.join(Settings.photos_library_path, 'Database',
+                               'apdb', 'Library.apdb')
     db_uri = 'file://%s?mode=ro' % db_path
     conn = sqlite3.connect(db_uri, uri=True)
     conn.row_factory = sqlite3.Row
+    if Settings.verbose > 2:
+        print('using database: %s' % db_path)
     return conn
 
 
