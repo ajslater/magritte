@@ -1,1 +1,12 @@
+# News
 
+## [0.2.0]
+### Contributions from @bs-github <Birger Schmidt>
+- make it work with Photos Version 2.0 (451.20.9)
+- add option to create hard links instead of copying
+- fix Settings.photos_library_path option
+- replace slashes and colons (/:) in album names with dashes ( - )
+- add EXCLUDE_ALBUM_NAMES for some empty albums and "Last Import"
+
+## [0.1.0]
+### Initial release
