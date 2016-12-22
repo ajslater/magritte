@@ -5,7 +5,7 @@ import copy
 
 from magritte.settings import Settings
 
-IMAGE_ROOT = os.path.join(Settings.photos_library_path, 'Masters')
+
 TOP_FOLDER_NAMES = ('', 'TopLevelAlbums')
 
 
@@ -22,17 +22,21 @@ def copy_if_newer(src, dst):
     dst_exists = os.path.exists(dst)
     copied = 0
     if not dst_exists or os.stat(src).st_mtime > os.stat(dst).st_mtime:
-        if Settings.verbose > 2:
-            print('cp %s -> %s' % (src, dst))
-        shutil.copy2(src, dst)
+        if Settings.do_copy:
+            if Settings.do_link:
+                os.link(src, dst)
+            else:
+                shutil.copy2(src, dst)
         copied = 1
+    if Settings.verbose > 3:
+        print('%s %s -> %s %s' % ('ln' if Settings.do_link else 'cp', src, dst, 'skipped (newer target)' if copied == 0 else ''))
     return copied
 
 
 def copy_album(album, folder_name, indent):
     """Copy an entire album."""
     media = album.get('media')
-    album_name = os.path.join(folder_name, album.get('name'))
+    album_name = os.path.join(folder_name, album.get('name').replace('/',' - ').replace(':',' - '))
     total_copied = 0
     if len(media) <= 0:
         if Settings.verbose > 1:
@@ -45,14 +49,14 @@ def copy_album(album, folder_name, indent):
         file_dst_path = os.path.join(Settings.export_path, album_name,
                                      item.get('fileName'))
         outstr = '  %s%s' % (indent, item.get('fileName'))
-        file_src_path = os.path.join(IMAGE_ROOT,
+        file_src_path = os.path.join(os.path.join(Settings.photos_library_path, 'Masters'),
                                      item.get('imagePath'))
         src_exists = os.path.exists(file_src_path)
         if src_exists:
             if Settings.do_copy:
                 total_copied += copy_if_newer(file_src_path, file_dst_path)
         else:
-            outstr += ' NOT FOUND'
+            outstr += ' (%s) NOT FOUND' % file_src_path
             print(outstr)
     print('  %scopied %s/%s items' % (indent, total_copied, len(media)))
     return total_copied
@@ -79,7 +83,8 @@ def copy_folders(folder, parents, hide):
             print('NULL FOLDER')
         return total_copied
     if Settings.copy_filter is None and \
-            folder.get('parentFolderUuid') == 'TopLevelAlbums':
+            (folder.get('parentFolderUuid') == 'TopLevelAlbums' or
+            folder.get('parentFolderUuid') == 'LibraryFolder'):
         hide = False
     folder_name = folder.get('name')
     if Settings.copy_filter and folder_name == Settings.copy_filter:

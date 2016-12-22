@@ -12,6 +12,7 @@ class Settings(object):
     export_path = os.path.join(PICTURES_PATH, 'Photos Export')
     verbose = 1
     do_copy = True
+    do_link = False
     copy_filter = None
 
     @classmethod
