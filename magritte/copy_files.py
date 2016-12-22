@@ -17,13 +17,20 @@ def mkdir_if_not_exist(sub_path):
     os.makedirs(full_path)
 
 
+def is_newer(filename_a, filename_b):
+    """Compare file mtimes."""
+    return os.path.getmtime(filename_a) > os.path.getmtime(filename_b)
+
+
 def copy_if_newer(src, dst):
     """Only copy the file if its newer than the old one."""
     dst_exists = os.path.exists(dst)
     copied = 0
-    if not dst_exists or os.stat(src).st_mtime > os.stat(dst).st_mtime:
+    if not dst_exists or is_newer(src, dst):
         if Settings.do_copy:
             if Settings.do_link:
+                if dst_exists and is_newer(src, dst):
+                    os.remove(dst)
                 os.link(src, dst)
             else:
                 shutil.copy2(src, dst)
