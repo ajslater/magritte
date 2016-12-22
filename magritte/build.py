@@ -1,4 +1,6 @@
 """Build the folder and album tree in memory."""
+
+
 def build_folder_tree(folders):
     """Build the folder tree."""
     root_folder = None

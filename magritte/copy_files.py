@@ -36,14 +36,17 @@ def copy_if_newer(src, dst):
                 shutil.copy2(src, dst)
         copied = 1
     if Settings.verbose > 3:
-        print('%s %s -> %s %s' % ('ln' if Settings.do_link else 'cp', src, dst, 'skipped (newer target)' if copied == 0 else ''))
+        operation = 'ln' if Settings.do_link else 'cp'
+        skipped = 'skipped (newer target)' if copied == 0 else ''
+        print('%s %s -> %s %s' % (operation, src, dst, skipped))
     return copied
 
 
 def copy_album(album, folder_name, indent):
     """Copy an entire album."""
     media = album.get('media')
-    album_name = os.path.join(folder_name, album.get('name').replace('/',' - ').replace(':',' - '))
+    album_fn = album.get('name').replace('/',' - ').replace(':',' - ')
+    album_name = os.path.join(folder_name, album_fn)
     total_copied = 0
     if len(media) <= 0:
         if Settings.verbose > 1:
@@ -102,7 +105,7 @@ def copy_folders(folder, parents, hide):
             print('%s%s type:%s HIDDEN FOLDER %s %s' %
                   (indent, folder_name, folder.get('folderType'),
                    folder.get('modelId'), folder.get('folderPath'))
-                  )
+                 )
     else:
         total_copied += copy_folder(folder, parents)
 
